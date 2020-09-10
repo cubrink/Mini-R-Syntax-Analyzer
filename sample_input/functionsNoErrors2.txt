@@ -1,0 +1,7 @@
+if (TRUE) {
+    cranberry(one, two, three)
+} else { # this is a comment
+    blueberry();
+    watermelon = 7.894;
+    strawberry = read()
+}

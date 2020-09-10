@@ -1,0 +1,13 @@
+TOKEN: IDENT                LEXEME: result
+TOKEN: ASSIGN               LEXEME: =
+INDEX ->  epsilon
+TOKEN: LPAREN               LEXEME: (
+TOKEN: TRUE                 LEXEME: TRUE
+CONST -> TRUE
+FACTOR -> CONST
+TOKEN: OR                   LEXEME: |
+MULT_OP_LIST -> epsilon
+TERM -> FACTOR MULT_OP_LIST
+ADD_OP -> |
+TOKEN: OR                   LEXEME: |
+Line 1: syntax error
