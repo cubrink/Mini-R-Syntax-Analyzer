@@ -1,76 +1,18 @@
 /* 	Mini-R lexical analyzer
 	Author: Curtis Brinker
-	Date: 	2020-08-31
+	Date: 	2020-09-11
+
+	Specifications of tokens to be
+	used with bison file parser.y
 */
 
 %{
-/* 
-Definitions of constants, variables, & function prototypes go here 
-*/
-
-// These need to be NON-ZERO!
-
-// Identifier
-#define T_IDENT     	1
-
-// Keywords
-#define T_INTCONST  	2
-#define T_FLOATCONST	3
-#define T_STRCONST		4
-#define T_IF			5
-#define T_ELSE			6
-#define T_WHILE			7
-#define T_FUNCTION		8
-#define T_FOR			9
-#define T_IN			10
-#define T_TRUE			11
-#define T_FALSE			12
-#define T_PRINT			13
-#define T_CAT			14
-#define T_READ			15
-#define T_LIST			16
-
-// Operators
-#define T_ADD	  		17
-#define T_SUB	  		18
-#define T_MULT	  		19
-#define T_DIV	  		20
-#define T_MOD			21
-#define T_POWER			22
-#define T_LT			23
-#define T_GT			24
-#define T_LE			25
-#define T_GE			26
-#define T_NE			27
-#define T_NOT			28
-#define T_AND			29
-#define T_OR			30
-#define T_EQ			31
-#define T_ASSIGN		32
-
-// Other symbols
-#define T_SEMICOLON		33
-#define T_COMMA			34
-#define T_LPAREN		35
-#define T_RPAREN		36
-#define T_LBRACKET		37
-#define T_RBRACKET		38
-#define T_LBRACE		39
-#define T_RBRACE		30
-#define T_COMMENT		41
-#define T_QUIT      	42
 
 
-// Unknown
-#define T_UNKNOWN   	99
+// int numLines = 0;
 
-
-
-
-int numLines = 0;
-
-void printTokenInfo(const char* tokenType, 
-                    const char* lexeme);
+// void printTokenInfo(const char* tokenType, 
+//                     const char* lexeme);
 
 %}
 
@@ -282,67 +224,24 @@ COMMENT					#.+$
 
 %%
 
-// User-written code goes here
+// // User-written code goes here
 
-void printTokenInfo(const char* tokenType, const char* lexeme) 
-{
-  printf("TOKEN: %-19s LEXEME: %s\n", tokenType, lexeme);
-}
+// void printTokenInfo(const char* tokenType, const char* lexeme) 
+// {
+//   printf("TOKEN: %-19s LEXEME: %s\n", tokenType, lexeme);
+// }
 
-// You should supply a yywrap function.
-// Having it return 1 means only 1 input file will be scanned.
-int yywrap(void) { return 1; }
+// // You should supply a yywrap function.
+// // Having it return 1 means only 1 input file will be scanned.
+// int yywrap(void) { return 1; }
 
-int main(void) 
-{
-  while ( yylex() ) ;  // Process tokens until 0 returned
+// int main(void) 
+// {
+//   while ( yylex() ) ;  // Process tokens until 0 returned
 
-  // Don't print this for the assignment.
-  // printf("Processed %d lines\n", numLines);
-  return 0;
-}
+//   // Don't print this for the assignment.
+//   // printf("Processed %d lines\n", numLines);
+//   return 0;
+// }
 
 
-// Keywords
-// FLOATCONST
-// STRCONST	
-// IF		
-// ELSE		
-// WHILE		
-// FUNCTION	
-// FOR		
-// IN		
-// TRUE		
-// FALSE		
-// PRINT		
-// CAT		
-// READ		
-// LIST		
-
-// // Operators
-// ADD	  	
-// SUB	  	
-// MULT	  	
-// DIV	  	
-// MOD		
-// LT		
-// GT		
-// LE		
-// GE		
-// NE		
-// NOT		
-// AND		
-// OR		
-// ASSIGN	
-
-// // Other symbols
-// SEMICOLON	
-// COMMA		
-// LPAREN	
-// RPAREN	
-// LBRACKET	
-// RBRACKET	
-// LBRACE	
-// RBRACE	
-// COMMENT	
-// QUIT      

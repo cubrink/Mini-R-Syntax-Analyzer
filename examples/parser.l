@@ -5,6 +5,20 @@
 */
 
 %{
+#include <stdio.h>
+
+int numLines = 1; 
+
+void printRule(const char *, const char *);
+int yyerror(const char *s);
+void printTokenInfo(const char* tokenType, const char* lexeme);
+
+extern "C" 
+{
+    int yyparse(void);
+    int yylex(void);
+    int yywrap() { return 1; }
+}
 
 %}
 

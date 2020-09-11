@@ -47,7 +47,7 @@ extern "C"
 %token T_FLOATCONST	
 %token T_STRCONST		
 %token T_IF			
-%token T_ELSE			
+// %token T_ELSE		// Don't use - ambigious
 %token T_WHILE			
 %token T_FUNCTION		
 %token T_FOR			
@@ -81,7 +81,7 @@ extern "C"
 %token T_SEMICOLON		
 %token T_COMMA			
 %token T_LPAREN		
-%token T_RPAREN		
+// %token T_RPAREN		// Don't use - ambigious
 %token T_LBRACKET		
 %token T_RBRACKET		
 %token T_LBRACE		
@@ -89,9 +89,13 @@ extern "C"
 %token T_COMMENT		
 %token T_QUIT      	
 
-
 // Unknown
 %token T_UNKNOWN   	
+
+// Remove ambiguity in grammar
+%nonassoc T_RPAREN
+$nonassoc T_ELSE
+
 
 
 /* Starting point */
@@ -99,137 +103,82 @@ extern "C"
 
 /* Translation rules */
 %%
-N_START		: // epsilon
-			{
-			printRule("START", "epsilon");
-			}
-			| N_START N_EXPR
-			{
-			printRule("START", "START EXPR");
-			printf("\n---- Completed parsing ----\n\n");
-			}
-			;
-N_EXPR		: T_QUIT
-			{
-			printRule("EXPR", "QUIT");
-			exit(1);
-			}
-			| N_CALC
-			{
-			printRule("EXPR", "CALC");
-			}
-			;
-N_CALC		: N_OPERAND N_OP N_OPERAND
-			{
-			printRule("CALC", "OPERAND OP OPERAND");
-			}
-			;
-N_OP			: T_ADD
-			{
-			printRule("OP", "ADD");
-			}
-                | T_SUB
-			{
-			printRule("OP", "SUB");
-			}
-                | T_MULT
-			{
-			printRule("OP", "MULT");
-			}
-                | T_DIV
-			{
-			printRule("OP", "DIV");
-			}
-			;
-N_OPERAND		: T_INTCONST
-			{
-			printRule("OPERAND", "INTCONST");
-			}
-                | T_IDENT
-                {
-			printRule("OPERAND", "IDENT");
-			}
-			;
 
-
-
-
-
-// Here are mine, above are for reference
-
-N_EXPR : N_IF_EXPR
-        {
-            printRule("EXPR", "IF_EXPR");
-        }
-        | N_WHILE_EXPR
-        {
-            printRule("EXPR", "WHILE_EXPR");
-        }
-        | N_FOR_EXPR
-        {
-            printRule("EXPR", "FOR_EXPR");
-        }
-        | N_COMPOUND_EXPR
-        {
-            printRule("EXPR", "COMPOUND_EXPR");
-        }
-        | N_ARITHLOGIC_EXPR
-        {
-            printRule("EXPR", "ARITHLOGIC_EXPR");
-        }
-        | N_ASSIGNMENT_EXPR
-        {
-            printRule("EXPR", "ASSIGNMENT_EXPR");
-        }
-        | N_OUTPUT_EXPR
-        {
-            printRule("EXPR", "OUTPUT_EXPR");
-        }
-        | N_INPUT_EXPR
-        {
-            printRule("EXPR", "INPUT_EXPR");
-        }
-        | N_LIST_EXPR
-        {
-            printRule("EXPR", "LIST_EXPR");
-        }
-        | N_FUNCTION_DEF
-        {
-            printRule("EXPR", "FUNCTION_DEF");
-        }
-        | N_FUNCTION_CALL
-        {
-            printRule("EXPR", "FUNCTION_CALL");
-        }
-        | N_QUIT_EXPR
-        {
-            printRule("EXPR", "QUIT_EXPR");
-        }
-        ;
-
-N_CONST : T_INTCONST
-        {
-            printRule("CONST", "INTCONST");
-        }
-        | T_STRCONST
-        {
-            printRule("CONST", "STRCONST");
-        }
-        | T_FLOATCONST
-        {
-            printRule("CONST", "FLOATCONST");
-        }
-        | T_TRUE
-        {
-            printRule("CONST", "TRUE");
-        }
-        | T_FALSE
-        {
-            printRule("CONST", "FALSE");
-        }
-        ;
-
-
+N_START             : N_EXPR
+                    {
+                        printRule("START", "EXPR");
+			            printf("\n---- Completed parsing ----\n\n");
+                    }
+N_EXPR              : N_IF_EXPR
+                    {
+                        printRule("EXPR", "IF_EXPR");
+                    }
+                    | N_WHILE_EXPR
+                    {
+                        printRule("EXPR", "WHILE_EXPR");
+                    }
+                    | N_FOR_EXPR
+                    {
+                        printRule("EXPR", "FOR_EXPR");
+                    }
+                    | N_COMPOUND_EXPR
+                    {
+                        printRule("EXPR", "COMPOUND_EXPR");
+                    }
+                    | N_ARITHLOGIC_EXPR
+                    {
+                        printRule("EXPR", "ARITHLOGIC_EXPR");
+                    }
+                    | N_ASSIGNMENT_EXPR
+                    {
+                        printRule("EXPR", "ASSIGNMENT_EXPR");
+                    }
+                    | N_OUTPUT_EXPR
+                    {
+                        printRule("EXPR", "OUTPUT_EXPR");
+                    }
+                    | N_INPUT_EXPR
+                    {
+                        printRule("EXPR", "INPUT_EXPR");
+                    }
+                    | N_LIST_EXPR
+                    {
+                        printRule("EXPR", "LIST_EXPR");
+                    }
+                    | N_FUNCTION_DEF
+                    {
+                        printRule("EXPR", "FUNCTION_DEF");
+                    }
+                    | N_FUNCTION_CALL
+                    {
+                        printRule("EXPR", "FUNCTION_CALL");
+                    }
+                    | N_QUIT_EXPR
+                    {
+                        printRule("EXPR", "QUIT_EXPR");
+                    }
+                    ;
+N_CONST             : T_INTCONST
+                    {
+                        printRule("CONST", "INTCONST");
+                    }
+                    | T_STRCONST
+                    {
+                        printRule("CONST", "STRCONST");
+                    }
+                    | T_FLOATCONST
+                    {
+                        printRule("CONST", "FLOATCONST");
+                    }
+                    | T_TRUE
+                    {
+                        printRule("CONST", "TRUE");
+                    }
+                    | T_FALSE
+                    {
+                        printRule("CONST", "FALSE");
+                    }
+                    ;
 N_COMPOUND_EXPR     : T_LBRACE N_EXPR N_EXPR_LIST T_RBRACE
                     {
                         printRule("COMPOUND_EXPR", "{ EXPR EXPR_LIST }");
@@ -508,19 +457,6 @@ N_ENTIRE_VAR        : T_IDENT
                         printRule("ENTIRE_VAR", "IDENT");
                     }
                     ;
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 	 
