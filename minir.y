@@ -1,19 +1,16 @@
 /*
-	parser.y
+	brinkerc.y
 
- 	Example of a bison specification file.
+    Mini-R lexical analyzer
+	Author: Curtis Brinker
+	Date: 	2020-09-11
 
-	Grammar is:
-	  <start> -> epsilon | <start> <expr>
-	  <expr> -> quit | <calc> 
-	  <calc> -> <operand> <op> <operand>
-	  <op> -> add | sub | mult | div
-	  <operand> -> intconst | ident 
+ 	Bison specification file for the mini-r language
 
       To create the syntax analyzer:
-        flex parser.l
-        bison parser.y
-        g++ parser.tab.c -o parser
+        flex brinkerc.l
+        bison brinkerc.y
+        g++ brinkerc.tab.c -o parser
         parser < inputFileName
  */
 
