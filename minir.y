@@ -475,6 +475,7 @@ void printRule(const char *lhs, const char *rhs)
 int yyerror(const char *s) 
 {
   printf("Line %i: %s\n", numLines, s);
+  exit(1);
   return(1);
 }
 
