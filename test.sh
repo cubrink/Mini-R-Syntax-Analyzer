@@ -6,6 +6,8 @@ input_directory="./sample_input"
 output_directory="./my_outputs"
 sample_output_directory="./sample_output"
 
+mkdir -p "$output_directory"
+
 for in_file in $(ls "$input_directory/");
 do
     echo "Testing input $in_file"
