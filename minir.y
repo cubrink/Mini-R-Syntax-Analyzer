@@ -36,8 +36,10 @@ extern "C"
 %}
 
 /* Token declarations */
-%token  T_IDENT T_INTCONST T_UNKNOWN 
-%token  T_ADD T_SUB T_MULT T_DIV T_QUIT
+
+// Remove ambiguity in grammar
+%nonassoc T_RPAREN
+%nonassoc T_ELSE
 
 // Identifier
 %token T_IDENT     	
@@ -47,7 +49,7 @@ extern "C"
 %token T_FLOATCONST	
 %token T_STRCONST		
 %token T_IF			
-// %token T_ELSE		// Don't use - ambigious
+// %token T_ELSE		// Don't use - ambigious, see below
 %token T_WHILE			
 %token T_FUNCTION		
 %token T_FOR			
@@ -81,7 +83,7 @@ extern "C"
 %token T_SEMICOLON		
 %token T_COMMA			
 %token T_LPAREN		
-// %token T_RPAREN		// Don't use - ambigious
+// %token T_RPAREN		// Don't use - ambigious, see below
 %token T_LBRACKET		
 %token T_RBRACKET		
 %token T_LBRACE		
@@ -92,9 +94,6 @@ extern "C"
 // Unknown
 %token T_UNKNOWN   	
 
-// Remove ambiguity in grammar
-%nonassoc T_RPAREN
-$nonassoc T_ELSE
 
 
 
@@ -202,7 +201,7 @@ N_IF_EXPR           : N_COND_IF T_RPAREN N_THEN_EXPR
                         printRule("IF_EXPR", "COND_IF ) THEN_EXPR ELSE EXPR");
                     }
                     ;
-N_COND_IF           : T_IF T_RPAREN N_EXPR
+N_COND_IF           : T_IF T_LPAREN N_EXPR
                     {
                         printRule("COND_IF", "IF ( EXPR");
                     }
@@ -217,19 +216,19 @@ N_WHILE_EXPR        : T_WHILE T_LPAREN N_EXPR T_RPAREN N_EXPR
                         printRule("WHILE_EXPR", "WHILE ( EXPR ) EXPR");
                     }
                     ;
-N_FOR_EXPR          : T_FOR T_LPAREN T_IDENT T_IN N_EXPR T_PAREN N_EXPR
+N_FOR_EXPR          : T_FOR T_LPAREN T_IDENT T_IN N_EXPR T_RPAREN N_EXPR
                     {
                         printRule("FOR_EXPR", "FOR ( IDENT IN EXPR ) EXPR");
                     }
                     ;
 N_LIST_EXPR         : T_LIST T_LPAREN N_CONST_LIST T_RPAREN
                     {
-                        printRule("LIST_EXPR", "( CONST_LIST )");
+                        printRule("LIST_EXPR", "LIST ( CONST_LIST )");
                     }
                     ;
 N_CONST_LIST        : N_CONST T_COMMA N_CONST_LIST 
                     {
-                        printRule("CONST_LIST", "CONST , CONST LIST");
+                        printRule("CONST_LIST", "CONST, CONST_LIST");
                     }
                     | N_CONST
                     {
@@ -243,7 +242,7 @@ N_ASSIGNMENT_EXPR   : T_IDENT N_INDEX T_ASSIGN N_EXPR
                     ;
 N_INDEX             : // epsilon
                     {
-                        printRule("INDEX", "epsilon");
+                        printRule("INDEX", " epsilon");
                     }
                     | T_LBRACKET T_LBRACKET N_EXPR T_RBRACKET T_RBRACKET 
                     {
@@ -253,6 +252,7 @@ N_INDEX             : // epsilon
 N_QUIT_EXPR         : T_QUIT T_LPAREN T_RPAREN
                     {
                         printRule("QUIT_EXPR", "QUIT()");
+                        exit(1);
                     }
                     ;
 N_OUTPUT_EXPR       : T_PRINT T_LPAREN N_EXPR T_RPAREN
@@ -294,10 +294,10 @@ N_PARAMS            : T_IDENT
                     }
                     | T_IDENT T_COMMA N_PARAMS
                     {
-                        printRule("PARAMS", "IDENT , PARAMS");
+                        printRule("PARAMS", "IDENT, PARAMS");
                     }
                     ;
-N_FUNCTION_CALL     : T_IDENT T_LPAREN N_ARG_LIST T)RPAREN
+N_FUNCTION_CALL     : T_IDENT T_LPAREN N_ARG_LIST T_RPAREN
                     {
                         printRule("FUNCTION_CALL", "IDENT ( ARG_LIST )");
                     }
@@ -322,12 +322,12 @@ N_ARGS              : N_EXPR
                     }
                     | N_EXPR T_COMMA N_ARGS
                     {
-                        printRule("ARGS", "EXPR , ARGS");
+                        printRule("ARGS", "EXPR, ARGS");
                     }
                     ;
 N_ARITHLOGIC_EXPR   : N_SIMPLE_ARITHLOGIC 
                     {
-                        printRule("ARITHLOGIC_EXPR", "SIMPLE_ARITHLOGIC")
+                        printRule("ARITHLOGIC_EXPR", "SIMPLE_ARITHLOGIC");
                     }
                     | N_SIMPLE_ARITHLOGIC N_REL_OP N_SIMPLE_ARITHLOGIC
                     {
@@ -345,7 +345,7 @@ N_ADD_OP_LIST       : // epsilon
                     }
                     | N_ADD_OP N_TERM N_ADD_OP_LIST 
                     {
-                        printRule("ADD_OP_LIST", "ADD_OP_LIST TERM ADD_OP_LIST");
+                        printRule("ADD_OP_LIST", "ADD_OP TERM ADD_OP_LIST");
                     }
                     ;
 N_TERM              : N_FACTOR N_MULT_OP_LIST
@@ -359,7 +359,7 @@ N_MULT_OP_LIST      : // epsilon
                     }
                     | N_MULT_OP N_FACTOR N_MULT_OP_LIST
                     {
-                        printRule("MULT_OP_LIST", "MULT_OP_LIST FACTOR MULT_OP_LIST");
+                        printRule("MULT_OP_LIST", "MULT_OP FACTOR MULT_OP_LIST");
                     }
                     ;
 N_FACTOR            : N_VAR 
@@ -376,41 +376,41 @@ N_FACTOR            : N_VAR
                     }
                     | T_NOT N_FACTOR 
                     {
-                        printRule("FACTOR", "NOT FACTOR");
+                        printRule("FACTOR", "! FACTOR");
                     }
                     ;
 N_ADD_OP            : T_ADD 
                     {
-                        printRule("ADD_OP", "ADD");
+                        printRule("ADD_OP", "+");
                     }
                     | T_SUB 
                     {
-                        printRule("ADD_OP", "SUB");
+                        printRule("ADD_OP", "-");
                     }
                     | T_OR
                     {
-                        printRule("ADD_OP", "OR");
+                        printRule("ADD_OP", "|");
                     }
                     ;
 N_MULT_OP           : T_MULT 
                     {
-                        printRule("MULT_OP", "MULT");
+                        printRule("MULT_OP", "*");
                     }
                     | T_DIV 
                     {
-                        printRule("MULT_OP", "DIV");
+                        printRule("MULT_OP", "/");
                     }
                     | T_AND 
                     {
-                        printRule("MULT_OP", "AND");
+                        printRule("MULT_OP", "&");
                     }
                     | T_MOD 
                     {
-                        printRule("MULT_OP", "MOD");
+                        printRule("MULT_OP", "%%");
                     }
-                    | T_POW
+                    | T_POWER
                     {
-                        printRule("MULT_OP", "POW");
+                        printRule("MULT_OP", "^");
                     }
                     ;
 N_REL_OP            : T_LT 
@@ -474,7 +474,7 @@ void printRule(const char *lhs, const char *rhs)
 
 int yyerror(const char *s) 
 {
-  printf("%s\n", s);
+  printf("Line %i: %s\n", numLines, s);
   return(1);
 }
 
@@ -490,6 +490,6 @@ int main()
 	yyparse();
   } while (!feof(yyin));
 
-  printf("%d lines processed\n", numLines);
+//   printf("%d lines processed\n", numLines);
   return(0);
 }
