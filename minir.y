@@ -103,7 +103,7 @@ extern "C"
 /* Translation rules */
 %%
 
-N_START             : N_EXPR
+N_START             : N_EXPR        // Seen 
                     {
                         printRule("START", "EXPR");
 			            printf("\n---- Completed parsing ----\n\n");
@@ -152,7 +152,7 @@ N_EXPR              : N_IF_EXPR
                     {
                         printRule("EXPR", "FUNCTION_CALL");
                     }
-                    | N_QUIT_EXPR
+                    | N_QUIT_EXPR // Not seen
                     {
                         printRule("EXPR", "QUIT_EXPR");
                     }
@@ -244,9 +244,9 @@ N_INDEX             : // epsilon
                     {
                         printRule("INDEX", " epsilon");
                     }
-                    | T_LBRACKET T_LBRACKET N_EXPR T_RBRACKET T_RBRACKET 
+                    | T_LBRACKET T_LBRACKET N_EXPR T_RBRACKET T_RBRACKET
                     {
-                        printRule("INDEX", "[ [ EXPR ] ]");
+                        printRule("INDEX", "[[ EXPR ]]");
                     }
                     ;
 N_QUIT_EXPR         : T_QUIT T_LPAREN T_RPAREN
